@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 법정 2040</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:#ebf5fb;color:#17324d}
+.app{max-width:520px;margin:auto;min-height:100vh;background:white;padding:22px}
+.card{border:2px solid #4b86a8;border-radius:22px;padding:22px;margin:12px 0;box-shadow:0 5px 15px #00000012}
+h1{font-size:32px;margin:5px 0 12px;color:#155a82}h2{font-size:23px;margin:5px 0 14px}p{line-height:1.65}.hero{text-align:center;padding:34px 18px}.robot{font-size:70px}.tag{display:inline-block;background:#dceef8;border-radius:20px;padding:7px 13px;margin:4px;font-weight:bold}
+button{width:100%;padding:15px;margin:8px 0;border:0;border-radius:14px;background:#216b91;color:white;font-size:17px;font-weight:bold;cursor:pointer}
+button.alt{background:#e9f3f8;color:#214e67;border:1px solid #9bb9c8}.case{font-size:14px;color:#53748a;font-weight:bold}.choice{text-align:left}
+.result{text-align:center}.score{display:flex;gap:8px;margin:15px 0}.score div{flex:1;background:#eef7fb;border-radius:14px;padding:12px;font-weight:bold}
+.small{font-size:13px;color:#607887}.hide{display:none}.progress{height:8px;background:#e8f0f4;border-radius:9px;overflow:hidden}.bar{height:100%;background:#3d82a8;width:33%}
+</style></head><body><main class="app">
+<section id="start" class="hero card"><div class="robot">⚖️🤖</div><h1>AI 법정 2040</h1><p><b>내가 미래의 AI 판사라면?</b></p><p>2040년, AI가 사람들의 사건을 빠르고 공정하게 판단하는 시대가 되었습니다.<br>당신이라면 어떤 판결을 내릴까요?</p><div class="tag">⏱ 약 5분</div><div class="tag">⚖️ 사건 10개</div><button onclick="startGame()">판결 시작하기</button><p class="small">※ 하나의 정답은 없습니다. 왜 그렇게 판단했는지가 중요합니다.</p></section>
+<section id="game" class="hide"><div class="progress"><div id="bar" class="bar"></div></div><div class="card"><div class="case" id="num"></div><h2 id="title"></h2><p id="story"></p><div id="feedback" class="small hide"></div></div><div id="choices"></div></section>
+<section id="result" class="hide result"><div class="card"><div class="robot">🏆🤖</div><h1>판결이 끝났습니다!</h1><h2 id="rtype"></h2><p id="rtext"></p><div class="score"><div>⚖️ 규칙<br><span id="s1">0</span></div><div>💙 공감<br><span id="s2">0</span></div><div>🧠 균형<br><span id="s3">0</span></div></div><hr><h2>💭 미래 과학자의 생각</h2><p><b>AI에게 맡길 수 없는 판단은 무엇일까요?</b></p><p class="small">게임을 마친 뒤 활동지에 나의 생각을 적어보세요.</p><button onclick="location.reload()">다시 판결하기</button></div></section>
+</main>
+<script>
+const cases=[
+{t:"사건 1 · 친구 숙제 베끼기",s:"A는 갑자기 쓰러진 동생을 돌보고 집안일을 하느라 숙제를 하지 못했습니다. 교칙에는 숙제를 베끼면 둘 다 0점 처리라고 되어 있지만, A는 어쩔 수 없이 친구의 숙제를 몰래 베껴 냈습니다. 당신이라면 어떻게 판결하겠습니까?",c:[["① 잘못했으니 교칙대로 벌을 준다. (0점 처리)",[2,0,0]],["② 피치 못할 사정을 고려해 벌하지 않고 넘어간다.",[0,2,0]],["③ 사과 후 스스로 숙제를 다시 해오도록 기회를 준다.",[1,1,2]]],ai:"학교 규칙에 따라 제출물은 무효이므로 ①번(0점 처리)을 내렸습니다.",rev:"만약 숙제를 베끼도록 도와준 사람이 당신의 가장 친한 친구라면, 판결을 바꾸겠습니까?"},
+{t:"사건 2 · 텅 빈 도로의 빨간불",s:"B는 시골에 홀로 계신 할머니의 응급 약을 사러 가는 중이었습니다. 도로는 완전히 텅 비어 있었지만 보행자 신호등은 빨간불이었습니다. 기다리면 약국이 문을 닫을 수도 있는 긴박한 상황에서 B는 무단횡단을 했습니다.",c:[["① 신호 위반이므로 벌금을 부과한다.",[2,0,0]],["② 응급 상황이므로 처벌하지 않는다.",[0,2,0]],["③ 벌금은 면제하되 안전 교육과 반성문을 요구한다.",[1,1,2]]],ai:"규칙상 예외를 인정하지 않고 ①번을 선택했습니다.",rev:"만약 무단횡단을 한 사람이 당신의 동생이나 가족이라면, 판결을 바꾸겠습니까?"},
+{t:"사건 3 · 화장실 다녀온 새치기",s:"C는 놀이공원에서 1시간 동안 줄을 섰습니다. 갑자기 배가 너무 아파 화장실에 다녀왔고, 다음 차례가 되자 뒤에 선 사람들에게 양해를 구하고 원래 자리에 돌아왔습니다.",c:[["① 다른 대기자의 기회를 뺏었으므로 맨 뒤로 보낸다.",[2,0,0]],["② 이미 오래 기다렸고 생리적 현상이므로 허락한다.",[0,2,0]],["③ 바로 뒤 한 사람의 동의를 얻으면 인정한다.",[1,1,2]]],ai:"대기열에서 이탈하면 자격을 잃는 것으로 보고 ①번을 선택했습니다.",rev:"만약 날씨가 너무 춥고 비가 내려 모두가 지친 상태였다면, 판결을 바꾸겠습니까?"},
+{t:"사건 4 · 글짓기 대회와 챗GPT",s:"D는 교내 과학 글짓기 대회에서 결론 문장이 막혀 챗GPT에게 자연스러운 결론 문장 2개를 요청했습니다. 도움을 받아 글을 완성했고 1등을 차지했습니다.",c:[["① 순수하게 쓰지 않았으므로 상을 박탈한다.",[2,0,0]],["② 도구를 사용해 글을 다듬은 것이므로 1등을 유지한다.",[0,2,0]],["③ AI 도움을 밝히고 감점 처리한다.",[1,1,2]]],ai:"독창성 규정을 지켜야 하므로 ①번(수상 무효)을 선택했습니다.",rev:"다른 참가자들도 몰래 번역기나 사전을 사용했다는 사실을 알게 된다면, 판결을 바꾸겠습니까?"},
+{t:"사건 5 · 유리창을 깬 우정",s:"E는 친구가 장난을 치다 교실 유리창을 깨는 모습을 보았습니다. 선생님이 누가 깼는지 묻자 친구가 큰 벌을 받을까 봐 “바람이 불어 깨졌어요”라고 거짓말했습니다.",c:[["① 거짓말과 잘못 모두 크게 징계한다.",[2,0,0]],["② 친구를 돕고 싶었던 마음을 고려해 훈계하고 넘어간다.",[0,2,0]],["③ 함께 유리를 치우고 친구가 자수할 시간을 준다.",[1,1,2]]],ai:"거짓 보고와 진실 은폐를 막기 위해 ①번을 선택했습니다.",rev:"만약 깨진 유리에 다른 무고한 친구가 다쳐 병원에 갔다면, 판결을 바꾸겠습니까?"},
+{t:"사건 6 · 조별 과제 무임승차",s:"F는 발표 당일 심한 독감으로 결석했습니다. 나머지 조원들이 자료를 완성해 만점을 받았습니다. F에게도 같은 점수를 주어야 할까요?",c:[["① 발표에 기여하지 않았으므로 0점 처리한다.",[2,0,0]],["② 아픈 것은 예측할 수 없으므로 같은 점수를 준다.",[0,2,0]],["③ 추가 대체 과제를 받은 뒤 같은 점수를 준다.",[1,1,2]]],ai:"당일 실제 기여도를 확인할 수 없으므로 ①번을 선택했습니다.",rev:"만약 F가 이전 준비 과정에서 누구보다 열심히 자료와 대본을 만들었다면, 판결을 바꾸겠습니까?"},
+{t:"사건 7 · 게임 계정 공유하기",s:"G는 부모님이 결제해 주신 공부 게임 계정을 이용 약관에 어긋나게 친구와 공유했습니다. 친구는 형편상 게임을 한 번도 해보지 못했습니다.",c:[["① 이용 규칙 위반이므로 계정을 정지한다.",[2,0,0]],["② 좋은 의도로 친구를 도운 것이니 넘어간다.",[0,2,0]],["③ 경고하고 계정 공유를 중단하게 한다.",[1,1,2]]],ai:"라이선스 규약 위반이므로 ①번을 선택했습니다.",rev:"계정 공유로 보안 오류가 나 정당하게 구매한 다른 아이들도 피해를 보았다면, 판결을 바꾸겠습니까?"},
+{t:"사건 8 · 고양이 구하기와 교통사고",s:"H는 좁은 골목길을 천천히 운전하던 중 아기 길고양이가 갑자기 뛰어들어 급브레이크를 밟았습니다. 고양이는 살았지만 뒤차가 추돌했습니다.",c:[["① 무리한 급정거이므로 H에게 책임을 묻는다.",[2,0,0]],["② 생명을 살리려 한 행동이므로 책임을 묻지 않는다.",[0,2,0]],["③ 보험으로 해결하고 돌발 상황 대처 교육을 받게 한다.",[1,1,2]]],ai:"사고 위험과 재산권을 고려해 ①번을 선택했습니다.",rev:"만약 갑자기 뛰어든 대상이 길고양이가 아니라 유모차를 탄 아기였다면, 판결을 바꾸겠습니까?"},
+{t:"사건 9 · 환경 포스터의 무단 도용",s:"I는 환경 보호 포스터를 만들며 인터넷에서 유료 판매 중인 작가의 배경 일러스트를 허락 없이 사용했습니다. 포스터는 교육감 상을 받았습니다.",c:[["① 저작권 침해이므로 수상을 취소한다.",[2,0,0]],["② 공익 목적이므로 수상을 유지한다.",[0,2,0]],["③ 수상은 취소하되 원작자에게 사과하고 정당한 출처를 표시한다.",[1,1,2]]],ai:"목적과 관계없이 저작권을 지켜야 하므로 ①번을 선택했습니다.",rev:"원작자가 사용을 기쁘게 생각하고 저작권료도 받지 않겠다고 했다면, 판결을 바꾸겠습니까?"},
+{t:"사건 10 · 스마트폰 비밀 제출",s:"J의 학교는 아침 9시 전 스마트폰을 제출해야 합니다. 하지만 타지에서 일하는 어머니의 급한 병원 검사 연락을 받아야 해서 J는 폰을 몰래 가지고 있었습니다.",c:[["① 형평성을 위해 규칙 위반에 따른 벌점을 준다.",[2,0,0]],["② 가족의 긴박한 사정이므로 눈감아 준다.",[0,2,0]],["③ 규칙은 지키되 담임을 통해 어머니 소식을 전해 받도록 한다.",[1,1,2]]],ai:"예외를 허용하면 규칙의 일관성이 흔들릴 수 있어 ①번을 선택했습니다.",rev:"만약 J가 연락을 기다린다는 핑계로 수업 중 몰래 영상을 보고 있었다면, 판결을 바꾸겠습니까?"}
+];
+let i=0,sc=[0,0,0];
+function startGame(){document.getElementById("start").classList.add("hide");document.getElementById("game").classList.remove("hide");show();}
+function show(){let x=cases[i];document.getElementById("num").textContent=`ROUND ${i+1} / 10`;document.getElementById("title").textContent=x.t;document.getElementById("story").textContent=x.s;document.getElementById("bar").style.width=((i+1)/10*100)+"%";let box=document.getElementById("choices");box.innerHTML="";x.c.forEach((q,n)=>{let b=document.createElement("button");b.className="alt choice";b.textContent=q[0];b.onclick=()=>pick(q[1]);box.appendChild(b)});}
+function pick(v){
+ const x=cases[i];
+ sc=sc.map((n,j)=>n+v[j]);
+ const selected=[...document.querySelectorAll("#choices button")].find(b=>b.disabled===false && b.dataset.selected==="1");
+ document.getElementById("choices").innerHTML="";
+ const fb=document.getElementById("feedback");
+ fb.classList.remove("hide");
+ fb.innerHTML=`<div class="card"><b>🤖 AI 판사의 판결</b><p>${x.ai}</p><b>⚡ 반전 변수</b><p>${x.rev}</p><p><b>당신은 어떤 판단을 했나요?</b></p></div>`;
+ let b=document.createElement("button"); b.textContent=i===9?"🏆 최종 결과 보기":"다음 사건 →"; b.onclick=()=>{i++;fb.classList.add("hide");if(i<10)show();else finish()}; document.getElementById("choices").appendChild(b);
+}
+function finish(){document.getElementById("game").classList.add("hide");document.getElementById("result").classList.remove("hide");let m=Math.max(...sc),type=m===sc[0]&&m>sc[1]&&m>sc[2]?"🤖 규칙을 지키는 AI 판사":m===sc[1]&&m>sc[2]?"💙 마음을 살피는 AI 판사":"🧠 AI와 사람이 함께하는 판사";document.getElementById("rtype").textContent=type;let text=type.includes("규칙")?"공정한 규칙과 일관된 판단을 중요하게 생각해요. 다만 사람마다 다른 상황을 살펴보는 것도 필요할 수 있어요.":type.includes("마음")?"사람의 상황과 감정을 중요하게 생각해요. 다만 모두에게 적용할 수 있는 공정한 기준도 필요해요.":"AI의 빠른 분석과 사람의 판단을 함께 활용하려고 해요. 미래에는 이런 협력이 필요할지도 몰라요!";document.getElementById("rtext").textContent=text;sc.forEach((x,j)=>document.getElementById("s"+(j+1)).textContent=x);}
+</script></body></html>
